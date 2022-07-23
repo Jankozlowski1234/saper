@@ -13,5 +13,5 @@ class Board:
         self.__matrix_of_squares = matrix_of_squares
 
     def print(self):
-        print("Our saper")
+        print("Our saper game TO DO!!!")
 

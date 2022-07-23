@@ -25,8 +25,4 @@ class Square():
         return self.__if_marked
 
 if __name__ == "__main__":
-    s=Square((2,3),1)
-    print(s.get_nr_bombs())
-
-
-
+    pass
