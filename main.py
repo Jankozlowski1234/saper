@@ -1,9 +1,10 @@
 from board import Board
 from square import Square
 import numpy as np
+import random as r
 
 
-GAMES = {"Beginner": (8, 8, 10), "Normal": (16, 16, 40)}
+GAMES = {"Beginner": (8, 8, 10), "Normal": (16, 16, 40), "Expert": (16, 30, 99)}
 NR_OF_ROWS = (8, 24)
 NR_OF_COLUMNS = (8, 30)
 NR_MIN_OF_BOMBS = 10
@@ -67,15 +68,24 @@ class Game:
     def __create_board(self, nr_rows: int, nr_columns: int, nr_mines: int):
         list_of_lists = []
         list_for_picking_bombs = []
-        for j in range(1, nr_rows):
+        for i in range(nr_columns):
             list_of_squares = []
-            for i in range(1, nr_columns):
+            for j in range(nr_rows):
                 coordinates = (i, j)
                 list_for_picking_bombs.append(coordinates)
                 square = Square(coordinates)
                 list_of_squares.append(square)
             list_of_lists.append(list_of_squares)
         matrix = np.array(list_of_lists)
+        self.__matrix_of_squares = matrix
+        self.__board = Board(matrix)
+        coordinates_of_mines = r.sample(list_for_picking_bombs, nr_mines)
+        for i in self.__board:
+            print(i)
+        for coordiante in coordinates_of_mines:
+            x, y = coordiante
+            self.__matrix_of_squares[x, y].give_bomb()
+        self.__board.prepare_board()
 
 
 if __name__ == "__main__":
