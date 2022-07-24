@@ -51,7 +51,7 @@ class Game:
     def __get_custom_game(self):
         nr_rows = self.__get_number_of(NR_OF_ROWS, "rows")
         nr_columns = self.__get_number_of(NR_OF_COLUMNS, "columns")
-        nr_mines =  self.__get_number_of((NR_MIN_OF_BOMBS, (nr_columns-1)*(nr_rows-1)), "mines")
+        nr_mines = self.__get_number_of((NR_MIN_OF_BOMBS, (nr_columns-1)*(nr_rows-1)), "mines")
         self.__mines_left = nr_mines
         return nr_rows, nr_columns, nr_mines
 
@@ -67,17 +67,15 @@ class Game:
     def __create_board(self, nr_rows: int, nr_columns: int, nr_mines: int):
         list_of_lists = []
         list_for_picking_bombs = []
-        for j in range(1,nr_rows+1):
+        for j in range(1, nr_rows):
             list_of_squares = []
-            for i in range(1,nr_columns+1):
-                coordinates = (i,j)
+            for i in range(1, nr_columns):
+                coordinates = (i, j)
                 list_for_picking_bombs.append(coordinates)
                 square = Square(coordinates)
                 list_of_squares.append(square)
             list_of_lists.append(list_of_squares)
         matrix = np.array(list_of_lists)
-        print(matrix)
-
 
 
 if __name__ == "__main__":
