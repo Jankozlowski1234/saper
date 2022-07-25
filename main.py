@@ -8,6 +8,7 @@ GAMES = {"Beginner": (8, 8, 10), "Normal": (16, 16, 40), "Expert": (16, 30, 99)}
 NR_OF_ROWS = (8, 24)
 NR_OF_COLUMNS = (8, 30)
 NR_MIN_OF_BOMBS = 10
+DISTANCE_BETWEEN_SQUARES = 0.1 ## square has length 1
 
 
 class Game:
@@ -21,6 +22,7 @@ class Game:
     def main(self):
         nr_rows, nr_columns, nr_mines = self.__beginning()
         self.__create_board(nr_rows, nr_columns, nr_mines)
+        self.draw()
         return
 
     def __beginning(self):
@@ -72,20 +74,28 @@ class Game:
             list_of_squares = []
             for j in range(nr_rows):
                 coordinates = (i, j)
+                draw_coordinates = ((1+DISTANCE_BETWEEN_SQUARES)*i+DISTANCE_BETWEEN_SQUARES,
+                                    (1+DISTANCE_BETWEEN_SQUARES)*j+DISTANCE_BETWEEN_SQUARES)
                 list_for_picking_bombs.append(coordinates)
-                square = Square(coordinates)
+                square = Square(coordinates, draw_coordinates)
                 list_of_squares.append(square)
             list_of_lists.append(list_of_squares)
         matrix = np.array(list_of_lists)
         self.__matrix_of_squares = matrix
-        self.__board = Board(matrix)
+        self.__board = Board(matrix, DISTANCE_BETWEEN_SQUARES)
         coordinates_of_mines = r.sample(list_for_picking_bombs, nr_mines)
-        for i in self.__board:
-            print(i)
         for coordiante in coordinates_of_mines:
             x, y = coordiante
             self.__matrix_of_squares[x, y].give_bomb()
         self.__board.prepare_board()
+
+    def draw(self,text: str = ""):
+        self.__board.draw(text)
+        return
+
+    def see_squares(self):
+        for i in self.__board:
+            print(i)
 
 
 if __name__ == "__main__":
