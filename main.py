@@ -134,7 +134,7 @@ class Game:
         self.__safe_squares_left -= 1
         return
 
-    def see_squares(self):  # do usunięcia !!!!!!!!!!!!!
+    def see_squares(self):  # do usunięcia !!!!!!!!!!!!
         for i in self.__board:
             print(i)
 
