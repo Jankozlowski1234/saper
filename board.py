@@ -1,4 +1,4 @@
-from square import Square
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Circle
@@ -14,7 +14,8 @@ GREY = to_rgb((128, 128, 128))
 BLUE = to_rgb((65, 105, 225))
 BEIGE = to_rgb((217, 186, 140))
 GREEN = to_rgb((124, 252, 0))
-RED = to_rgb((255,0,0))
+RED = to_rgb((255, 0, 0))
+BLACK = to_rgb((0, 0, 0))
 
 BACKGROUND_COLOR = GREY
 UNVISITED_SQUARE_COLOR = BLUE
@@ -26,6 +27,8 @@ FOUR_COLOR = GREEN
 FIVE_COLOR = GREEN
 SIX_COLOR = GREEN
 BOMB_COLOR = RED
+COLOR_BETWEEN_SQUARES = BLACK
+
 
 class Board:
     '''
@@ -37,29 +40,44 @@ class Board:
         self.__distance = distance_between_squares
         self.__ax = None
 
-    def draw(self, text: str = ""):
+    def draw(self, text: str = "", time: int = 0, bombs: int = 0):
         fig, ax = plt.subplots()
         ax.axis('off')
         self.__ax = ax
         x, y = self.get_shape_of_board()
-        ax.set(xlim=(-1, x+1), ylim=(-1, y+1))
+        ax.set(xlim=(-1, x+2), ylim=(-1, y+5))
         ax.add_patch(Rectangle((0, 0), x, y, color=BACKGROUND_COLOR))
+        ax.add_patch(Rectangle((self.__distance, self.__distance),
+                               x-2*self.__distance, y-2*self.__distance, color=COLOR_BETWEEN_SQUARES))
+        ax.text(x * 0.5, y+3, text, fontname="Comic Sans MS")
+        ax.text(x * 2 / 3, y + 1, f"Time: {time}s", fontname="Comic Sans MS")
+        ax.text(1, y + 1, f"Bombs left: {bombs}", fontname="Comic Sans MS")
         for square in self:
             if not square.if_visited():
                 x_sq, y_sq = square.get_draw_coordinates()
                 ax.add_patch(Rectangle((x_sq, y_sq), 1, 1, color=UNVISITED_SQUARE_COLOR))
             else:
                 self.draw_visited(square)
+        self.draw_numbers()
         plt.show()
 
-    def draw_visited(self,square):
+    def draw_visited(self, square):
         x_sq, y_sq = square.get_draw_coordinates()
         self.__ax.add_patch(Rectangle((x_sq, y_sq), 1, 1, color=VISITED_SQUARE_COLOR))
         if square.if_bomb():
-            self.__ax.text(x_sq, y_sq, "!0!",fontname="Comic Sans MS")
+            self.__ax.text(x_sq+0.4, y_sq+0.35, "!0!", fontname="Comic Sans MS")
             return
         if square.get_nr_bombs_around() != 0:
-            self.__ax.text(x_sq, y_sq, str(square.get_nr_bombs_around()), fontname="Comic Sans MS")
+            self.__ax.text(x_sq+0.4, y_sq+0.35, str(square.get_nr_bombs_around()), fontname="Comic Sans MS")
+        return
+
+    def draw_numbers(self):
+        for number, square in enumerate(self.__matrix_of_squares[:, 0]):
+            x_sq, y_sq = square.get_draw_coordinates()
+            self.__ax.text(x_sq + 0.4, y_sq - 0.65, str(number), fontname="Comic Sans MS")
+        for number, square in enumerate(self.__matrix_of_squares[0, :]):
+            x_sq, y_sq = square.get_draw_coordinates()
+            self.__ax.text(x_sq - 0.6, y_sq + 0.35, str(number), fontname="Comic Sans MS")
         return
 
     def get_shape_of_board(self):
@@ -96,5 +114,5 @@ class Board:
                 nr_of_mines = self.count_number_of_mines_around(square)
                 square.set_nr_bombs_around(nr_of_mines)
 
-        for square in self:
+        for square in self: ###### usunąć !!!!!!!!!!!!!!!
             square.visit()

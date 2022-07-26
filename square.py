@@ -50,6 +50,10 @@ class Square:
         self.__if_visited = True
         return
 
+    def mark(self):
+        self.__if_marked = True
+        return
+
 
 if __name__ == "__main__":
     pass

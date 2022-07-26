@@ -22,7 +22,7 @@ class Game:
     def main(self):
         nr_rows, nr_columns, nr_mines = self.__beginning()
         self.__create_board(nr_rows, nr_columns, nr_mines)
-        self.draw()
+        self.draw("yollo", 17)
         return
 
     def __beginning(self):
@@ -89,11 +89,11 @@ class Game:
             self.__matrix_of_squares[x, y].give_bomb()
         self.__board.prepare_board()
 
-    def draw(self,text: str = ""):
-        self.__board.draw(text)
+    def draw(self, text: str = "", time: int = 0, bombs: int = 0):
+        self.__board.draw(text, time, bombs)
         return
 
-    def see_squares(self):
+    def see_squares(self): ## do usunięcia !!!!!!!!!!!!!
         for i in self.__board:
             print(i)
 
