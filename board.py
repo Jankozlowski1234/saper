@@ -52,7 +52,7 @@ class Board:
         ax.add_patch(Rectangle((self.__distance, self.__distance),
                                x-2*self.__distance, y-2*self.__distance, color=COLOR_BETWEEN_SQUARES))
         ax.text(x * 0.5, y+3, text, fontname="Comic Sans MS")
-        ax.text(x * 2 / 3, y + 1, f"Time: {time}s", fontname="Comic Sans MS")
+        ax.text(x * 2 / 3, y + 1, f"Time: {time//60}min {time %60}s", fontname="Comic Sans MS")
         ax.text(1, y + 1, f"Bombs left: {bombs}", fontname="Comic Sans MS")
         for square in self:
             if not square.if_visited():
@@ -124,8 +124,9 @@ class Board:
                 set_to_visit.add((x_sq, y_sq))
                 if square.if_empty() & ((x_sq, y_sq) not in lst_of_coordinates_empty_visited):
                     lst_empty_to_visit.append(square)
+            lst_of_coordinates_empty_visited.append(middle.get_coordinates())
         for coordinates in set_to_visit:
-            self[coordinates].visit()
+            self[coordinates].visit(True)
 
     def prepare_board(self):
         for square in self:

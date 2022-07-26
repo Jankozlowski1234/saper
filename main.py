@@ -24,7 +24,7 @@ class Game:
         nr_rows, nr_columns, nr_mines = self.__beginning()
         self.__create_board(nr_rows, nr_columns, nr_mines)
         while self.__safe_squares_left != 0:
-            self.draw("yollo", 429692137, self.__mines_left)
+            self.draw("yollo", 121, self.__mines_left)
             output = self.move()
             if output == "END":
                 break
@@ -71,16 +71,18 @@ class Game:
     def move(self):
         str = input("Write coordinnates without brackets, separate by coma "
                     "of a square and if and add M if you want to mark this square(like 2,3 M): ").strip().lower()
-        coordinates = str[:3]
-        coordinates = coordinates.split(",")
+        last = str[-1]
+        if last == 'm':
+            str = str[:-1]
+        coordinates = str.split(",")[:2]
         for nr, cord in enumerate(coordinates):
             coordinates[nr] = int(cord)
-        if str[-1] == "m":
+        if last == "m":
             if self.__board[coordinates[0], coordinates[1]].if_marked():
                 self.__board[coordinates[0], coordinates[1]].unmark()
                 self.__mines_left += 1
                 return
-            output = self.__board[coordinates[0], coordinates[1]].mark()
+            self.__board[coordinates[0], coordinates[1]].mark()
             self.__mines_left-=1
             return
         output = self.__board[coordinates[0], coordinates[1]].visit()
