@@ -9,7 +9,7 @@ GAMES = {"Beginner": (8, 8, 10), "Normal": (16, 16, 40), "Expert": (16, 30, 99)}
 NR_OF_ROWS = (8, 24)
 NR_OF_COLUMNS = (8, 30)
 NR_MIN_OF_BOMBS = 10
-DISTANCE_BETWEEN_SQUARES = 0.1 ## square has length 1
+DISTANCE_BETWEEN_SQUARES = 0.1  # square has length 1
 
 
 class Game:
@@ -22,18 +22,17 @@ class Game:
         self.__safe_squares_left = None
         self.__start_time = 0
 
-
     def main(self):
         nr_rows, nr_columns, nr_mines = self.__beginning()
         self.__create_board(nr_rows, nr_columns, nr_mines)
         self.__start_time = perf_counter()
         while self.__safe_squares_left != 0:
-            time = int(perf_counter()- self.__start_time)
+            time = int(perf_counter() - self.__start_time)
             self.draw("yollo", time, self.__mines_left)
             output = self.move()
             if output == "END":
                 break
-        time = int(perf_counter()- self.__start_time)
+        time = int(perf_counter() - self.__start_time)
         self.draw("yollo", time, self.__mines_left)
         if self.__safe_squares_left != 0:
             print("You loose!!!")
@@ -89,7 +88,7 @@ class Game:
                 self.__mines_left += 1
                 return
             self.__board[coordinates[0], coordinates[1]].mark()
-            self.__mines_left-=1
+            self.__mines_left -= 1
             return
         output = self.__board[coordinates[0], coordinates[1]].visit()
         return output
@@ -135,7 +134,7 @@ class Game:
         self.__safe_squares_left -= 1
         return
 
-    def see_squares(self): ## do usunięcia !!!!!!!!!!!!!
+    def see_squares(self):  # do usunięcia !!!!!!!!!!!!!
         for i in self.__board:
             print(i)
 
