@@ -75,7 +75,7 @@ class Game:
 
     def move(self):
         str = input("Write coordinnates without brackets, separate by coma "
-                    "of a square and if and add M if you want to mark this square(like 2,3 M): ").strip().lower()
+                    "of a square and if and add M if you want to mark this square (like 2,3 M): ").strip().lower()
         last = str[-1]
         if last == 'm':
             str = str[:-1]
