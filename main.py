@@ -2,6 +2,7 @@ from board import Board
 from square import Square
 import numpy as np
 import random as r
+from time import perf_counter
 
 
 GAMES = {"Beginner": (8, 8, 10), "Normal": (16, 16, 40), "Expert": (16, 30, 99)}
@@ -19,20 +20,25 @@ class Game:
         self.__games = GAMES
         self.__mines_left = None
         self.__safe_squares_left = None
+        self.__start_time = 0
+
 
     def main(self):
         nr_rows, nr_columns, nr_mines = self.__beginning()
         self.__create_board(nr_rows, nr_columns, nr_mines)
+        self.__start_time = perf_counter()
         while self.__safe_squares_left != 0:
-            self.draw("yollo", 121, self.__mines_left)
+            time = int(perf_counter()- self.__start_time)
+            self.draw("yollo", time, self.__mines_left)
             output = self.move()
             if output == "END":
                 break
-        self.draw("yollo", 429692137, self.__mines_left)
+        time = int(perf_counter()- self.__start_time)
+        self.draw("yollo", time, self.__mines_left)
         if self.__safe_squares_left != 0:
             print("You loose!!!")
         else:
-            print("You win!!!")
+            print(f"Congrutalitions {self.get_name()}, your time is {time}")
         return
 
     def __beginning(self):
