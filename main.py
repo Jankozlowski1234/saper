@@ -18,11 +18,21 @@ class Game:
         self.__board = None
         self.__games = GAMES
         self.__mines_left = None
+        self.__safe_squares_left = None
 
     def main(self):
         nr_rows, nr_columns, nr_mines = self.__beginning()
         self.__create_board(nr_rows, nr_columns, nr_mines)
-        self.draw("yollo", 17)
+        while self.__safe_squares_left != 0:
+            self.draw("yollo", 429692137, self.__mines_left)
+            output = self.move()
+            if output == "END":
+                break
+        self.draw("yollo", 429692137, self.__mines_left)
+        if self.__safe_squares_left != 0:
+            print("You loose!!!")
+        else:
+            print("You win!!!")
         return
 
     def __beginning(self):
@@ -58,6 +68,24 @@ class Game:
         self.__mines_left = nr_mines
         return nr_rows, nr_columns, nr_mines
 
+    def move(self):
+        str = input("Write coordinnates without brackets, separate by coma "
+                    "of a square and if and add M if you want to mark this square(like 2,3 M): ").strip().lower()
+        coordinates = str[:3]
+        coordinates = coordinates.split(",")
+        for nr, cord in enumerate(coordinates):
+            coordinates[nr] = int(cord)
+        if str[-1] == "m":
+            if self.__board[coordinates[0], coordinates[1]].if_marked():
+                self.__board[coordinates[0], coordinates[1]].unmark()
+                self.__mines_left += 1
+                return
+            output = self.__board[coordinates[0], coordinates[1]].mark()
+            self.__mines_left-=1
+            return
+        output = self.__board[coordinates[0], coordinates[1]].visit()
+        return output
+
     def __get_number_of(self, touple: (), name: str):
         nr = input(f"Give number of {name} (between {touple[0]} and {touple[1]}): ").strip()
         while nr not in [str(nr) for nr in range(touple[0], touple[1] + 1)]:
@@ -68,6 +96,8 @@ class Game:
         return self.__name
 
     def __create_board(self, nr_rows: int, nr_columns: int, nr_mines: int):
+        self.__mines_left = nr_mines
+        self.__safe_squares_left = nr_rows*nr_columns-nr_mines
         list_of_lists = []
         list_for_picking_bombs = []
         for i in range(nr_columns):
@@ -77,12 +107,12 @@ class Game:
                 draw_coordinates = ((1+DISTANCE_BETWEEN_SQUARES)*i+DISTANCE_BETWEEN_SQUARES,
                                     (1+DISTANCE_BETWEEN_SQUARES)*j+DISTANCE_BETWEEN_SQUARES)
                 list_for_picking_bombs.append(coordinates)
-                square = Square(coordinates, draw_coordinates)
+                square = Square(coordinates, draw_coordinates, nr=0, board=None, game=self)
                 list_of_squares.append(square)
             list_of_lists.append(list_of_squares)
         matrix = np.array(list_of_lists)
         self.__matrix_of_squares = matrix
-        self.__board = Board(matrix, DISTANCE_BETWEEN_SQUARES)
+        self.__board = Board(matrix, DISTANCE_BETWEEN_SQUARES, self)
         coordinates_of_mines = r.sample(list_for_picking_bombs, nr_mines)
         for coordiante in coordinates_of_mines:
             x, y = coordiante
@@ -91,6 +121,10 @@ class Game:
 
     def draw(self, text: str = "", time: int = 0, bombs: int = 0):
         self.__board.draw(text, time, bombs)
+        return
+
+    def substract_one_from_safe_squares(self):
+        self.__safe_squares_left -= 1
         return
 
     def see_squares(self): ## do usunięcia !!!!!!!!!!!!!

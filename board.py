@@ -27,6 +27,7 @@ FOUR_COLOR = GREEN
 FIVE_COLOR = GREEN
 SIX_COLOR = GREEN
 BOMB_COLOR = RED
+MARKED_COLOR = RED
 COLOR_BETWEEN_SQUARES = BLACK
 
 
@@ -34,11 +35,12 @@ class Board:
     '''
     This class will represent a board, its main goals will be painting board
     '''
-    def __init__(self, matrix_of_squares, distance_between_squares: float):
+    def __init__(self, matrix_of_squares, distance_between_squares: float, game):
         assert isinstance(matrix_of_squares, np.ndarray)
         self.__matrix_of_squares = matrix_of_squares
         self.__distance = distance_between_squares
         self.__ax = None
+        self.__game = game
 
     def draw(self, text: str = "", time: int = 0, bombs: int = 0):
         fig, ax = plt.subplots()
@@ -56,6 +58,8 @@ class Board:
             if not square.if_visited():
                 x_sq, y_sq = square.get_draw_coordinates()
                 ax.add_patch(Rectangle((x_sq, y_sq), 1, 1, color=UNVISITED_SQUARE_COLOR))
+                if square.if_marked():
+                    ax.add_patch(Circle((x_sq+0.5, y_sq+0.5), 0.5, color=MARKED_COLOR))
             else:
                 self.draw_visited(square)
         self.draw_numbers()
@@ -102,17 +106,33 @@ class Board:
                 y_new = y+j
                 if (x_new <= x_board) & (0 <= x_new) & (y_new <= y_board) & (0 <= y_new):
                     if (i, j) != (0, 0):
-                        lst.append(self.__matrix_of_squares[x_new, y_new])
+                        lst.append(self[(x_new, y_new)])
         return lst
 
     def count_number_of_mines_around(self, square) -> int:
         return len([sq for sq in self.get_neighbour(square) if sq.if_bomb()])
 
+    def visit_around_empty(self, square):
+        assert square.if_empty()
+        set_to_visit = set()
+        lst_of_coordinates_empty_visited = []
+        lst_empty_to_visit = [square]
+        while lst_empty_to_visit:
+            middle = lst_empty_to_visit.pop(0)
+            for square in self.get_neighbour(middle):
+                x_sq, y_sq = square.get_coordinates()
+                set_to_visit.add((x_sq, y_sq))
+                if square.if_empty() & ((x_sq, y_sq) not in lst_of_coordinates_empty_visited):
+                    lst_empty_to_visit.append(square)
+        for coordinates in set_to_visit:
+            self[coordinates].visit()
+
     def prepare_board(self):
         for square in self:
+            square.add_board(self)
             if not square.if_bomb():
                 nr_of_mines = self.count_number_of_mines_around(square)
                 square.set_nr_bombs_around(nr_of_mines)
 
-        for square in self: ###### usunąć !!!!!!!!!!!!!!!
-            square.visit()
+    def __getitem__(self, coordinates: (int, int)):
+        return self.__matrix_of_squares[coordinates]
