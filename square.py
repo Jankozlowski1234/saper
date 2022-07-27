@@ -73,4 +73,5 @@ class Square:
 
 
 if __name__ == "__main__":
+    a = 1
     pass
