@@ -1,2 +1,2 @@
 # saper
-Saper game in python
+Saper game in python UNFINISHED (will be fully playable soon)
