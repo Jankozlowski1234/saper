@@ -74,23 +74,26 @@ class Game:
         return nr_rows, nr_columns, nr_mines
 
     def move(self):
-        str = input("Write coordinnates without brackets, separate by coma "
-                    "of a square and if and add M if you want to mark this square (like 2,3 M): ").strip().lower()
-        last = str[-1]
+        string = input("Write coordinnates without brackets, separate by coma "
+                        "of a square and if and add M if you want to mark this square (like 2,3 M): ").strip().lower()
+        last = string[-1]
         if last == 'm':
-            str = str[:-1]
-        coordinates = str.split(",")[:2]
+            string = string[:-1]
+        coordinates = string.split(",")[:2]
         for nr, cord in enumerate(coordinates):
             coordinates[nr] = int(cord)
+        x_sq, y_sq = coordinates[0], coordinates[1]
+        if self.__board[x_sq, y_sq].if_visited():
+            return
         if last == "m":
-            if self.__board[coordinates[0], coordinates[1]].if_marked():
-                self.__board[coordinates[0], coordinates[1]].unmark()
+            if self.__board[x_sq, y_sq].if_marked():
+                self.__board[x_sq, y_sq].unmark()
                 self.__mines_left += 1
                 return
-            self.__board[coordinates[0], coordinates[1]].mark()
+            self.__board[x_sq, y_sq].mark()
             self.__mines_left -= 1
             return
-        output = self.__board[coordinates[0], coordinates[1]].visit()
+        output = self.__board[x_sq, y_sq].visit()
         return output
 
     def __get_number_of(self, touple: (), name: str):

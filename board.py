@@ -115,16 +115,16 @@ class Board:
     def visit_around_empty(self, square):
         assert square.if_empty()
         set_to_visit = set()
-        lst_of_coordinates_empty_visited = []
+        lst_of_coordinates_empty_to_visit = [square.get_coordinates()]
         lst_empty_to_visit = [square]
         while lst_empty_to_visit:
             middle = lst_empty_to_visit.pop(0)
             for square in self.get_neighbour(middle):
                 x_sq, y_sq = square.get_coordinates()
                 set_to_visit.add((x_sq, y_sq))
-                if square.if_empty() & ((x_sq, y_sq) not in lst_of_coordinates_empty_visited):
+                if square.if_empty() & ((x_sq, y_sq) not in lst_of_coordinates_empty_to_visit):
                     lst_empty_to_visit.append(square)
-            lst_of_coordinates_empty_visited.append(middle.get_coordinates())
+                    lst_of_coordinates_empty_to_visit.append((x_sq, y_sq))
         for coordinates in set_to_visit:
             self[coordinates].visit(True)
 
