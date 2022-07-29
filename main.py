@@ -137,9 +137,13 @@ class Game:
         self.__safe_squares_left -= 1
         return
 
-    def see_squares(self):  # do usunięcia !!!!!!!!!!!!
-        for i in self.__board:
-            print(i)
+    def pygame_start(self):
+        nr_rows, nr_columns, nr_mines = self.__beginning()
+        self.__create_board(nr_rows, nr_columns, nr_mines)
+        return
+
+    def get_board(self):
+        return self.__board
 
 
 if __name__ == "__main__":
